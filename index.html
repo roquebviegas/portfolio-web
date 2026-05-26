@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Roque Viegas | Portfolio</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+
+    :root{
+      --bg: #0f172a;
+      --card: #1e293b;
+      --card-light: #243447;
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --accent: #38bdf8;
+      --border: rgba(255,255,255,0.08);
+      --shadow: rgba(0,0,0,0.25);
+    }
+
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      scroll-behavior:smooth;
+    }
+
+    body{
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      line-height:1.6;
+    }
+
+    a{
+      text-decoration:none;
+      color:inherit;
+    }
+
+    img{
+      max-width:100%;
+      display:block;
+    }
+
+    .container{
+      width:90%;
+      max-width:1200px;
+      margin:auto;
+    }
+
+    /* NAVBAR */
+
+    nav{
+      position:fixed;
+      width:100%;
+      top:0;
+      z-index:999;
+      background: rgba(15,23,42,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom:1px solid var(--border);
+    }
+
+    .nav-container{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      padding:18px 0;
+    }
+
+    .logo{
+      font-size:1.2rem;
+      font-weight:700;
+      color:var(--accent);
+    }
+
+    .nav-links{
+      display:flex;
+      gap:30px;
+    }
+
+    .nav-links a{
+      color:var(--muted);
+      transition:0.3s;
+      font-weight:500;
+    }
+
+    .nav-links a:hover{
+      color:var(--accent);
+    }
+
+    /* HERO */
+
+    header{
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      padding-top:100px;
+    }
+
+    .hero{
+      display:grid;
+      grid-template-columns: 350px 1fr;
+      gap:60px;
+      align-items:center;
+    }
+
+    .hero-image{
+      position:relative;
+    }
+
+    .hero-image img{
+      border-radius:24px;
+      border:4px solid var(--accent);
+      box-shadow:0 20px 60px rgba(56,189,248,0.25);
+    }
+
+    .hero-content h1{
+      font-size:4rem;
+      line-height:1.1;
+      margin-bottom:15px;
+    }
+
+    .hero-content h2{
+      color:var(--accent);
+      font-size:1.3rem;
+      font-weight:500;
+      margin-bottom:25px;
+    }
+
+    .hero-content p{
+      color:var(--muted);
+      font-size:1.05rem;
+      margin-bottom:35px;
+      max-width:800px;
+    }
+
+    .button-group{
+      display:flex;
+      gap:16px;
+      flex-wrap:wrap;
+    }
+
+    .btn{
+      padding:14px 22px;
+      border-radius:12px;
+      font-weight:600;
+      transition:0.3s;
+      border:none;
+      cursor:pointer;
+    }
+
+    .btn-primary{
+      background:var(--accent);
+      color:#0f172a;
+    }
+
+    .btn-primary:hover{
+      transform:translateY(-3px);
+      box-shadow:0 12px 24px rgba(56,189,248,0.2);
+    }
+
+    .btn-secondary{
+      border:1px solid var(--border);
+      background:transparent;
+      color:var(--text);
+    }
+
+    .btn-secondary:hover{
+      border-color:var(--accent);
+      color:var(--accent);
+    }
+
+    /* SECTION */
+
+    section{
+      padding:100px 0;
+    }
+
+    .section-title{
+      font-size:2.5rem;
+      margin-bottom:20px;
+      text-align:center;
+    }
+
+    .section-subtitle{
+      text-align:center;
+      color:var(--muted);
+      max-width:800px;
+      margin:0 auto 60px;
+    }
+
+    /* JOURNEY */
+
+    .journey-grid{
+      display:grid;
+      grid-template-columns: repeat(auto-fit,minmax(300px,1fr));
+      gap:25px;
+    }
+
+    .journey-card{
+      background:var(--card);
+      padding:30px;
+      border-radius:20px;
+      border:1px solid var(--border);
+      transition:0.3s;
+    }
+
+    .journey-card:hover{
+      transform:translateY(-5px);
+      border-color:rgba(56,189,248,0.4);
+    }
+
+    .journey-card h3{
+      margin-bottom:20px;
+      color:var(--accent);
+    }
+
+    .tags{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+    }
+
+    .tag{
+      background:var(--card-light);
+      padding:8px 14px;
+      border-radius:999px;
+      font-size:0.9rem;
+      color:var(--text);
+    }
+
+    /* PROJECTS */
+
+    .projects-grid{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(340px,1fr));
+      gap:30px;
+    }
+
+    .project-card{
+      background:var(--card);
+      border-radius:24px;
+      overflow:hidden;
+      border:1px solid var(--border);
+      transition:0.35s;
+      display:flex;
+      flex-direction:column;
+    }
+
+    .project-card:hover{
+      transform:translateY(-8px);
+      border-color:rgba(56,189,248,0.4);
+      box-shadow:0 20px 40px rgba(0,0,0,0.25);
+    }
+
+    .project-image{
+      height:220px;
+      background:linear-gradient(135deg,#1e3a8a,#0f172a);
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      font-size:4rem;
+    }
+
+    .project-content{
+      padding:30px;
+    }
+
+    .project-content h3{
+      margin-bottom:15px;
+      font-size:1.4rem;
+    }
+
+    .project-content p{
+      color:var(--muted);
+      margin-bottom:20px;
+    }
+
+    .project-links{
+      display:flex;
+      gap:12px;
+      margin-top:25px;
+      flex-wrap:wrap;
+    }
+
+    /* EXPERIENCE */
+
+    .timeline{
+      max-width:900px;
+      margin:auto;
+    }
+
+    .timeline-item{
+      background:var(--card);
+      padding:30px;
+      border-radius:20px;
+      margin-bottom:25px;
+      border:1px solid var(--border);
+    }
+
+    .timeline-item h3{
+      color:var(--accent);
+      margin-bottom:8px;
+    }
+
+    .timeline-item h4{
+      margin-bottom:10px;
+      color:var(--text);
+    }
+
+    .timeline-item span{
+      color:var(--muted);
+      font-size:0.95rem;
+    }
+
+    .timeline-item ul{
+      margin-top:20px;
+      padding-left:20px;
+      color:var(--muted);
+    }
+
+    .timeline-item li{
+      margin-bottom:10px;
+    }
+
+    /* CONTACT */
+
+    .contact{
+      text-align:center;
+    }
+
+    .contact p{
+      color:var(--muted);
+      margin-bottom:30px;
+    }
+
+    .contact-links{
+      display:flex;
+      justify-content:center;
+      gap:20px;
+      flex-wrap:wrap;
+    }
+
+    footer{
+      border-top:1px solid var(--border);
+      padding:40px 20px;
+      text-align:center;
+      color:var(--muted);
+    }
+
+    /* RESPONSIVE */
+
+    @media(max-width:900px){
+
+      .hero{
+        grid-template-columns:1fr;
+        text-align:center;
+      }
+
+      .hero-image{
+        max-width:320px;
+        margin:auto;
+      }
+
+      .button-group{
+        justify-content:center;
+      }
+
+      .hero-content h1{
+        font-size:3rem;
+      }
+
+      .nav-links{
+        display:none;
+      }
+
+    }
+
+    @media(max-width:600px){
+
+      .hero-content h1{
+        font-size:2.3rem;
+      }
+
+      .section-title{
+        font-size:2rem;
+      }
+
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+
+  <nav>
+    <div class="container nav-container">
+
+      <div class="logo">
+        Roque Viegas
+      </div>
+
+      <div class="nav-links">
+        <a href="#about">About</a>
+        <a href="#journey">Journey</a>
+        <a href="#projects">Projects</a>
+        <a href="#experience">Experience</a>
+        <a href="#contact">Contact</a>
+      </div>
+
+    </div>
+  </nav>
+
+  <!-- HERO -->
+
+  <header id="about">
+
+    <div class="container hero">
+
+      <div class="hero-image">
+        <!-- Replace with your actual image -->
+        <img src="/Users/rbviegas/Desktop/Portfolio HTML/profile-image.jpeg" alt="Roque Viegas">
+      </div>
+
+      <div class="hero-content">
+
+        <h1>
+          Data Engineering & DevOps Journey
+        </h1>
+
+        <h2>
+          Digital Marketing Strategist transitioning into Cloud & Data Infrastructure
+        </h2>
+
+        <p>
+          Hi, I'm Roque Viegas. I currently work as a Digital Marketing Strategist
+          at Southeastern University, where I focus on campaign analytics,
+          automation, reporting, SEO strategy, and data-driven decision-making.
+
+          My long-term goal is to transition into Data Engineering and DevOps,
+          building scalable data pipelines and cloud-native systems using modern
+          engineering technologies.
+
+          I am currently developing hands-on projects focused on Python, SQL,
+          PostgreSQL, Docker, Kubernetes, AWS, Azure, Airflow, Spark, and cloud infrastructure.
+        </p>
+
+        <div class="button-group">
+
+          <a class="btn btn-primary"
+             href="https://github.com/roquebviegas"
+             target="_blank">
+             GitHub
+          </a>
+
+          <a class="btn btn-secondary"
+             href="https://www.linkedin.com/in/roqueviegas/"
+             target="_blank">
+             LinkedIn
+          </a>
+
+          <a class="btn btn-secondary"
+             href="/Users/rbviegas/Desktop/Portfolio HTML/resume.pdf"
+             target="_blank">
+             Resume
+          </a>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </header>
+
+  <!-- JOURNEY -->
+
+  <section id="journey">
+
+    <div class="container">
+
+      <h2 class="section-title">
+        Current Learning Journey
+      </h2>
+
+      <p class="section-subtitle">
+        Building foundational skills in cloud engineering, data pipelines,
+        infrastructure automation, and scalable backend systems.
+      </p>
+
+      <div class="journey-grid">
+
+        <div class="journey-card">
+
+          <h3>Tech Stack</h3>
+
+          <div class="tags">
+            <span class="tag">Python</span>
+            <span class="tag">SQL</span>
+            <span class="tag">Bash</span>
+            <span class="tag">PostgreSQL</span>
+            <span class="tag">Docker</span>
+            <span class="tag">Kubernetes</span>
+            <span class="tag">AWS</span>
+            <span class="tag">Azure</span>
+            <span class="tag">Airflow</span>
+            <span class="tag">Spark</span>
+            <span class="tag">GitHub</span>
+          </div>
+
+        </div>
+
+        <div class="journey-card">
+
+          <h3>Certifications</h3>
+
+          <div class="tags">
+            <span class="tag">Google Analytics</span>
+            <span class="tag">Google Ads</span>
+            <span class="tag">IBM Data Engineering</span>
+            <span class="tag">Cybersecurity Foundations</span>
+            <span class="tag">SEO Certification</span>
+            <span class="tag">Email Marketing</span>
+          </div>
+
+        </div>
+
+        <div class="journey-card">
+
+          <h3>Currently Pursuing</h3>
+
+          <div class="tags">
+            <span class="tag">AWS Cloud Practitioner</span>
+            <span class="tag">AWS Solutions Architect</span>
+            <span class="tag">Data Engineering Projects</span>
+            <span class="tag">Cloud Infrastructure</span>
+            <span class="tag">DevOps Workflows</span>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- PROJECTS -->
+
+  <section id="projects">
+
+    <div class="container">
+
+      <h2 class="section-title">
+        Featured Projects
+      </h2>
+
+      <p class="section-subtitle">
+        Hands-on projects focused on data engineering, automation,
+        cloud infrastructure, and DevOps practices.
+      </p>
+
+      <div class="projects-grid">
+
+        <!-- PROJECT 1 -->
+
+        <div class="project-card">
+
+          <div class="project-image">
+            📊
+          </div>
+
+          <div class="project-content">
+
+            <h3>CSV Pipeline — College Majors Data</h3>
+
+            <p>
+              ETL pipeline that uses python to download College Major data,
+              transforms datasets using, and loads structured
+              data into PostgreSQL.
+            </p>
+
+            <div class="tags">
+              <span class="tag">Python3</span>
+              <span class="tag">PostgreSQL</span>
+              <span class="tag">Pandas</span>
+              <span class="tag">SQLAlchemy</span>
+              <span class="tag">python-dotenv</span>
+            </div>
+
+            <div class="project-links">
+
+              <a class="btn btn-primary"
+                 href="https://github.com/roquebviegas/csv-pipeline"
+                 target="_blank">
+                 GitHub
+              </a>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- PROJECT 2 -->
+
+        <div class="project-card">
+
+          <div class="project-image">
+           ⚽
+          </div>
+
+          <div class="project-content">
+
+            <h3>Brasileirão Card Analysis</h3>
+
+            <p>
+              End-to-end data engineering and analytics project that collects,
+              processes, stores, and visualizes disciplinary statistics from the
+              Brazilian Série A football league using external APIs,
+              PostgreSQL, Python pipelines, and a PHP analytics dashboard.
+            </p>
+
+            <div class="tags">
+              <span class="tag">Python</span>
+              <span class="tag">PostgreSQL</span>
+              <span class="tag">PHP</span>
+              <span class="tag">SQL</span>
+              <span class="tag">API Integration</span>
+              <span class="tag">ETL Pipelines</span>
+              <span class="tag">Data Analysis</span>
+            </div>
+
+            <div class="project-links">
+
+              <a class="btn btn-primary"
+                  href="https://github.com/roquebviegas/brasileirao-card-analysis"
+                  target="_blank">
+                  GitHub
+              </a>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- PROJECT 3 -->
+
+        <div class="project-card">
+
+          <div class="project-image">
+            ☁️
+          </div>
+
+          <div class="project-content">
+
+            <h3>AWS Cloud Infrastructure Lab</h3>
+
+            <p>
+              Cloud infrastructure project focused on deploying
+              containerized applications using AWS services,
+              Kubernetes, and CI/CD workflows.
+            </p>
+
+            <div class="tags">
+              <span class="tag">AWS</span>
+              <span class="tag">Kubernetes</span>
+              <span class="tag">Docker</span>
+              <span class="tag">GitHub Actions</span>
+            </div>
+
+            <div class="project-links">
+
+              <a class="btn btn-primary"
+                 href="https://github.com/YOUR_GITHUB/project-3"
+                 target="_blank">
+                 GitHub
+              </a>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- EXPERIENCE -->
+
+  <section id="experience">
+
+    <div class="container">
+
+      <h2 class="section-title">
+        Experience
+      </h2>
+
+      <p class="section-subtitle">
+        Professional experience in digital marketing, analytics,
+        reporting, and automation.
+      </p>
+
+      <div class="timeline">
+
+        <div class="timeline-item">
+
+          <h3>Digital Marketing Strategist</h3>
+
+          <h4>SEU Creative — Southeastern University</h4>
+
+          <span>October 2024 — Present</span>
+
+          <ul>
+            <li>Analyzed campaign performance data to support data-driven marketing decisions.</li>
+            <li>Developed reporting workflows and campaign analytics dashboards.</li>
+            <li>Managed SEO strategies, marketing funnels, and lead generation systems.</li>
+            <li>Worked with automation workflows and secure SFTP file transfers.</li>
+            <li>Collaborated with cross-functional teams on digital strategy and optimization.</li>
+          </ul>
+
+        </div>
+
+        <div class="timeline-item">
+
+          <h3>Marketing Student Worker</h3>
+
+          <h4>SEU Creative — Southeastern University</h4>
+
+          <span>September 2022 — May 2024</span>
+
+          <ul>
+            <li>Supported marketing campaigns and analytics reporting initiatives.</li>
+            <li>Worked with Google Ads, SEO strategies, and campaign optimization.</li>
+            <li>Created lead generation workflows and performance tracking reports.</li>
+          </ul>
+
+        </div>
+
+        <div class="timeline-item">
+
+          <h3>Communication & Digital Media Assistant</h3>
+
+          <h4>Mastro — Digital Marketing for Business Growth</h4>
+
+          <span>February 2023 — July 2023</span>
+
+          <ul>
+            <li>Supported social media strategy and campaign execution.</li>
+            <li>Collaborated with marketing teams to improve campaign performance.</li>
+            <li>Helped analyze and optimize digital media initiatives.</li>
+          </ul>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- EDUCATION -->
+
+  <section>
+
+    <div class="container">
+
+      <h2 class="section-title">
+        Education
+      </h2>
+
+      <div class="timeline">
+
+        <div class="timeline-item">
+
+          <h3>MBA — Master of Business Administration</h3>
+
+          <h4>Southeastern University</h4>
+
+          <span>2022 — 2024</span>
+
+        </div>
+
+        <div class="timeline-item">
+
+          <h3>Bachelor's Degree — Communication Studies</h3>
+
+          <h4>Northern Illinois University</h4>
+
+          <span>2021 — 2022</span>
+
+        </div>
+
+        <div class="timeline-item">
+
+          <h3>Associate Degree — Business Administration</h3>
+
+          <h4>Monroe College</h4>
+
+          <span>2018 — 2019</span>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- CONTACT -->
+
+  <section id="contact">
+
+    <div class="container contact">
+
+      <h2 class="section-title">
+        Let's Connect
+      </h2>
+
+      <p>
+        Open to networking, collaboration, and future opportunities
+        in Marketing Strategy, Data Engineering, Cloud Infrastructure, and DevOps.
+      </p>
+  <script src="https://js-na2.hsforms.net/forms/embed/246300435.js" defer></script>
+    <div class="hs-form-frame" data-region="na2" data-form-id="ba2b556d-48c9-41eb-8741-c8b1113386ee" data-portal-id="246300435"></div>
+    </br>
+      <div class="contact-links">
+
+        <a class="btn btn-primary"
+           href="mailto:roquebviegas@gmail.com">
+           Email
+        </a>
+
+        <a class="btn btn-secondary"
+           href="https://github.com/roquebviegas"
+           target="_blank">
+           GitHub
+        </a>
+
+        <a class="btn btn-secondary"
+           href="https://www.linkedin.com/in/roqueviegas/"
+           target="_blank">
+           LinkedIn
+        </a>
+
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- FOOTER -->
+
+  <footer>
+    © 2026 Roque Viegas — Built with HTML, CSS & curiosity for cloud engineering.
+  </footer>
+
+</body>
+</html>
