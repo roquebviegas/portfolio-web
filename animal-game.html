@@ -3,74 +3,127 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>20 Questions – Guess the Animal</title>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet" />
-  <style>
-    /* ── RESET & BASE ── */
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  <title>20 Questions – Guess the Animal | Roque Viegas</title>
 
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
     :root {
-      --bg:        #0d1117;
-      --surface:   #161b22;
-      --border:    #30363d;
-      --accent:    #f0a500;
-      --accent2:   #e05c00;
-      --text:      #e6edf3;
-      --muted:     #8b949e;
-      --yes:       #3fb950;
-      --no:        #f85149;
-      --radius:    12px;
+      --bg:         #0f172a;
+      --card:       #1e293b;
+      --card-light: #243447;
+      --text:       #e2e8f0;
+      --muted:      #94a3b8;
+      --accent:     #38bdf8;
+      --border:     rgba(255,255,255,0.08);
+      --shadow:     rgba(0,0,0,0.25);
+      --yes:        #4ade80;
+      --no:         #f87171;
     }
 
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; scroll-behavior: smooth; }
+
     body {
-      font-family: 'DM Mono', monospace;
       background: var(--bg);
       color: var(--text);
+      font-family: 'Inter', sans-serif;
+      line-height: 1.6;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      padding: 2rem 1rem 4rem;
     }
 
-    /* ── HEADER ── */
-    header {
-      text-align: center;
-      margin-bottom: 2rem;
+    a { text-decoration: none; color: inherit; }
+
+    /* ── NAVBAR ── */
+    nav {
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 999;
+      background: rgba(15,23,42,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
     }
-    header .emoji-row {
-      font-size: 2.4rem;
+    .nav-container {
+      width: 90%;
+      max-width: 1200px;
+      margin: auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 18px 0;
+    }
+    .logo {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+    .nav-links {
+      display: flex;
+      gap: 30px;
+    }
+    .nav-links a {
+      color: var(--muted);
+      transition: 0.3s;
+      font-weight: 500;
+      font-size: 0.95rem;
+    }
+    .nav-links a:hover, .nav-links a.active { color: var(--accent); }
+
+    /* ── PAGE BODY ── */
+    .page-wrapper {
+      flex: 1;
+      padding: 120px 20px 80px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* ── HERO TITLE ── */
+    .page-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    .emoji-row {
+      font-size: 2rem;
       letter-spacing: 0.2rem;
+      margin-bottom: 16px;
       animation: float 3s ease-in-out infinite;
     }
     @keyframes float {
       0%,100% { transform: translateY(0); }
       50%      { transform: translateY(-6px); }
     }
-    header h1 {
-      font-family: 'Syne', sans-serif;
-      font-size: clamp(1.8rem, 5vw, 3rem);
-      font-weight: 800;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      margin: 0.4rem 0 0.2rem;
+    .page-header h1 {
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 700;
       line-height: 1.1;
+      margin-bottom: 12px;
     }
-    header p {
+    .page-header p {
       color: var(--muted);
-      font-size: 0.85rem;
+      font-size: 1.05rem;
+      max-width: 500px;
+      margin: 0 auto;
     }
 
     /* ── GAME CARD ── */
     .card {
       width: 100%;
       max-width: 680px;
-      background: var(--surface);
+      background: var(--card);
+      border-radius: 24px;
       border: 1px solid var(--border);
-      border-radius: var(--radius);
       overflow: hidden;
+      box-shadow: 0 20px 60px var(--shadow);
+      transition: 0.35s;
+    }
+    .card:hover {
+      border-color: rgba(56,189,248,0.25);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.35);
     }
 
     /* ── STATUS BAR ── */
@@ -78,25 +131,26 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 0.75rem 1.2rem;
+      padding: 14px 24px;
       border-bottom: 1px solid var(--border);
-      font-size: 0.78rem;
-      color: var(--muted);
+      background: var(--card-light);
     }
-    .status-bar .questions-left {
+    .questions-left {
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 8px;
+      font-size: 0.85rem;
+      color: var(--muted);
+      font-weight: 500;
     }
     .ql-num {
-      font-family: 'Syne', sans-serif;
+      font-size: 1.2rem;
       font-weight: 700;
-      font-size: 1.1rem;
       color: var(--accent);
     }
     .dots {
       display: flex;
-      gap: 3px;
+      gap: 4px;
     }
     .dot {
       width: 8px; height: 8px;
@@ -104,17 +158,17 @@
       background: var(--border);
       transition: background 0.3s;
     }
-    .dot.used    { background: var(--accent2); }
-    .dot.current { background: var(--accent); box-shadow: 0 0 6px var(--accent); }
+    .dot.used    { background: rgba(56,189,248,0.35); }
+    .dot.current { background: var(--accent); box-shadow: 0 0 8px rgba(56,189,248,0.6); }
 
     /* ── CHAT LOG ── */
     #chat-log {
-      padding: 1.2rem;
+      padding: 20px 24px;
       max-height: 400px;
       overflow-y: auto;
       display: flex;
       flex-direction: column;
-      gap: 0.75rem;
+      gap: 12px;
       scroll-behavior: smooth;
     }
     #chat-log::-webkit-scrollbar { width: 5px; }
@@ -136,39 +190,41 @@
     .msg .label {
       font-size: 0.68rem;
       color: var(--muted);
-      margin-bottom: 3px;
+      margin-bottom: 4px;
       text-transform: uppercase;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.08em;
+      font-weight: 600;
     }
     .msg .bubble {
-      padding: 0.6rem 0.9rem;
-      border-radius: 10px;
-      font-size: 0.88rem;
+      padding: 10px 16px;
+      border-radius: 12px;
+      font-size: 0.9rem;
       line-height: 1.5;
+      border: 1px solid var(--border);
     }
     .msg.user .bubble {
-      background: rgba(240, 165, 0, 0.15);
-      border: 1px solid rgba(240, 165, 0, 0.35);
+      background: rgba(56,189,248,0.1);
+      border-color: rgba(56,189,248,0.3);
       color: var(--text);
     }
     .msg.bot .bubble {
-      background: rgba(255,255,255,0.04);
-      border: 1px solid var(--border);
+      background: var(--card-light);
       color: var(--text);
     }
-    .msg.bot .bubble.yes { border-color: var(--yes); color: var(--yes); }
-    .msg.bot .bubble.no  { border-color: var(--no);  color: var(--no); }
+    .msg.bot .bubble.yes { border-color: rgba(74,222,128,0.5); color: var(--yes); background: rgba(74,222,128,0.07); }
+    .msg.bot .bubble.no  { border-color: rgba(248,113,113,0.5); color: var(--no);  background: rgba(248,113,113,0.07); }
     .msg.bot .bubble.win {
-      border-color: var(--accent);
+      border-color: rgba(56,189,248,0.5);
       color: var(--accent);
-      font-weight: 700;
-      font-family: 'Syne', sans-serif;
-      font-size: 1rem;
+      background: rgba(56,189,248,0.08);
+      font-weight: 600;
+      font-size: 0.95rem;
     }
     .msg.bot .bubble.lose {
-      border-color: var(--no);
+      border-color: rgba(248,113,113,0.4);
       color: var(--no);
-      font-weight: 600;
+      background: rgba(248,113,113,0.07);
+      font-weight: 500;
     }
 
     /* ── TYPING INDICATOR ── */
@@ -176,7 +232,7 @@
       display: flex;
       gap: 5px;
       align-items: center;
-      padding: 0.75rem 1rem;
+      padding: 14px 16px;
     }
     .typing .bubble span {
       width: 7px; height: 7px;
@@ -187,155 +243,189 @@
     .typing .bubble span:nth-child(2) { animation-delay: 0.2s; }
     .typing .bubble span:nth-child(3) { animation-delay: 0.4s; }
     @keyframes bounce {
-      0%,80%,100% { transform: translateY(0); opacity: 0.5; }
+      0%,80%,100% { transform: translateY(0); opacity: 0.4; }
       40%          { transform: translateY(-6px); opacity: 1; }
     }
 
-    /* ── HINT ROW ── */
+    /* ── HINT CHIPS ── */
     .hint-row {
-      padding: 0 1.2rem 0.6rem;
+      padding: 0 24px 14px;
       display: flex;
-      gap: 0.5rem;
+      gap: 8px;
       flex-wrap: wrap;
     }
     .hint-chip {
-      font-size: 0.72rem;
-      padding: 0.25rem 0.65rem;
-      border-radius: 99px;
+      font-size: 0.78rem;
+      padding: 6px 14px;
+      border-radius: 999px;
       border: 1px solid var(--border);
       color: var(--muted);
       cursor: pointer;
-      transition: all 0.15s;
+      transition: all 0.2s;
       background: transparent;
-      font-family: 'DM Mono', monospace;
+      font-family: 'Inter', sans-serif;
+      font-weight: 500;
     }
     .hint-chip:hover {
-      border-color: var(--accent);
+      border-color: rgba(56,189,248,0.5);
       color: var(--accent);
-      background: rgba(240,165,0,0.08);
+      background: rgba(56,189,248,0.07);
+      transform: translateY(-2px);
     }
 
     /* ── INPUT AREA ── */
     .input-area {
-      padding: 1rem 1.2rem;
+      padding: 16px 24px;
       border-top: 1px solid var(--border);
       display: flex;
-      gap: 0.6rem;
+      gap: 10px;
+      background: var(--card-light);
     }
     #user-input {
       flex: 1;
-      background: rgba(255,255,255,0.04);
+      background: var(--bg);
       border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 0.65rem 0.9rem;
+      border-radius: 12px;
+      padding: 12px 16px;
       color: var(--text);
-      font-family: 'DM Mono', monospace;
-      font-size: 0.88rem;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9rem;
       outline: none;
       transition: border-color 0.2s;
     }
-    #user-input:focus { border-color: var(--accent); }
+    #user-input:focus { border-color: rgba(56,189,248,0.5); }
     #user-input::placeholder { color: var(--muted); }
     #user-input:disabled { opacity: 0.4; cursor: not-allowed; }
 
+    /* matches portfolio .btn.btn-primary */
     #send-btn {
       background: var(--accent);
-      color: #000;
+      color: #0f172a;
       border: none;
-      border-radius: 8px;
-      padding: 0.65rem 1.2rem;
-      font-family: 'Syne', sans-serif;
-      font-weight: 700;
-      font-size: 0.88rem;
+      border-radius: 12px;
+      padding: 12px 22px;
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
+      font-size: 0.9rem;
       cursor: pointer;
-      transition: all 0.15s;
+      transition: 0.3s;
       white-space: nowrap;
     }
-    #send-btn:hover  { background: var(--accent2); color: #fff; }
+    #send-btn:hover  { transform: translateY(-3px); box-shadow: 0 12px 24px rgba(56,189,248,0.2); }
     #send-btn:active { transform: scale(0.97); }
-    #send-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+    #send-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
 
-    /* ── NEW GAME BTN ── */
+    /* ── NEW GAME BTN — matches .btn-secondary ── */
     #new-game-btn {
       display: none;
-      margin: 0 auto;
-      margin-top: 1rem;
-      padding: 0.65rem 1.8rem;
+      margin: 20px auto 0;
+      padding: 14px 28px;
+      border: 1px solid var(--border);
       background: transparent;
-      border: 1px solid var(--accent);
-      color: var(--accent);
-      font-family: 'Syne', sans-serif;
-      font-weight: 700;
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-weight: 600;
       font-size: 0.9rem;
-      border-radius: 8px;
+      border-radius: 12px;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: 0.3s;
     }
-    #new-game-btn:hover { background: var(--accent); color: #000; }
+    #new-game-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
 
     /* ── FOOTER ── */
     footer {
-      margin-top: 2rem;
-      font-size: 0.75rem;
-      color: var(--muted);
+      border-top: 1px solid var(--border);
+      padding: 30px 20px;
       text-align: center;
+      color: var(--muted);
+      font-size: 0.875rem;
     }
-    footer a { color: var(--accent); text-decoration: none; }
+    footer a { color: var(--accent); transition: 0.2s; }
+    footer a:hover { opacity: 0.8; }
+
+    /* ── RESPONSIVE ── */
+    @media(max-width: 600px) {
+      .nav-links { display: none; }
+      .page-header h1 { font-size: 1.8rem; }
+      #chat-log { max-height: 320px; }
+    }
   </style>
 </head>
 <body>
 
-<header>
-  <div class="emoji-row">🐘 🦁 🐧 🦋 🐬</div>
-  <h1>Guess the Animal</h1>
-  <p>20 yes/no questions to figure out the mystery animal</p>
-</header>
-
-<div class="card">
-  <!-- Status bar -->
-  <div class="status-bar">
-    <div class="questions-left">
-      <span class="ql-num" id="ql-num">20</span>
-      <span>questions left</span>
+  <!-- NAVBAR -->
+  <nav>
+    <div class="nav-container">
+      <div class="logo">Roque Viegas</div>
+      <div class="nav-links">
+        <a href="index.html#about">About</a>
+        <a href="index.html#journey">Journey</a>
+        <a href="index.html#projects" class="active">Projects</a>
+        <a href="index.html#experience">Experience</a>
+        <a href="index.html#contact">Contact</a>
+      </div>
     </div>
-    <div class="dots" id="dots-row"></div>
+  </nav>
+
+  <!-- PAGE -->
+  <div class="page-wrapper">
+
+    <div class="page-header">
+      <div class="emoji-row">🐘 🦁 🐧 🦋 🐬</div>
+      <h1>Guess the Animal</h1>
+      <p>20 yes/no questions to figure out the mystery animal. Can you crack it?</p>
+    </div>
+
+    <div class="card">
+
+      <!-- Status bar -->
+      <div class="status-bar">
+        <div class="questions-left">
+          <span class="ql-num" id="ql-num">20</span>
+          <span>questions left</span>
+        </div>
+        <div class="dots" id="dots-row"></div>
+      </div>
+
+      <!-- Chat log -->
+      <div id="chat-log"></div>
+
+      <!-- Quick chips -->
+      <div class="hint-row" id="hint-row">
+        <button class="hint-chip" onclick="fillInput('Is it a mammal?')">Is it a mammal?</button>
+        <button class="hint-chip" onclick="fillInput('Does it live in water?')">Lives in water?</button>
+        <button class="hint-chip" onclick="fillInput('Can it fly?')">Can it fly?</button>
+        <button class="hint-chip" onclick="fillInput('Is it bigger than a cat?')">Bigger than a cat?</button>
+        <button class="hint-chip" onclick="fillInput('Is it dangerous?')">Is it dangerous?</button>
+      </div>
+
+      <!-- Input -->
+      <div class="input-area">
+        <input id="user-input" type="text" placeholder="Ask a yes/no question or guess the animal…" autocomplete="off" />
+        <button id="send-btn" onclick="sendMessage()">Ask →</button>
+      </div>
+
+    </div>
+
+    <button id="new-game-btn" onclick="resetGame()">🔄 Play Again</button>
+
   </div>
 
-  <!-- Chat log -->
-  <div id="chat-log"></div>
-
-  <!-- Quick-question chips -->
-  <div class="hint-row" id="hint-row">
-    <button class="hint-chip" onclick="fillInput('Is it a mammal?')">Is it a mammal?</button>
-    <button class="hint-chip" onclick="fillInput('Does it live in water?')">Lives in water?</button>
-    <button class="hint-chip" onclick="fillInput('Can it fly?')">Can it fly?</button>
-    <button class="hint-chip" onclick="fillInput('Is it bigger than a cat?')">Bigger than a cat?</button>
-    <button class="hint-chip" onclick="fillInput('Is it dangerous?')">Is it dangerous?</button>
-  </div>
-
-  <!-- Input -->
-  <div class="input-area">
-    <input id="user-input" type="text" placeholder="Ask a yes/no question or guess the animal…" autocomplete="off" />
-    <button id="send-btn" onclick="sendMessage()">Ask →</button>
-  </div>
-</div>
-
-<button id="new-game-btn" onclick="resetGame()">🔄 Play Again</button>
-
-<footer>
-  Powered by Gemini · <a href="../index.html">← Back to Portfolio</a>
-</footer>
+  <!-- FOOTER -->
+  <footer>
+    © 2026 Roque Viegas — <a href="index.html">← Back to Portfolio</a>
+  </footer>
 
 <script>
-  // ── CONFIG ──────────────────────────────────────────────
   const BACKEND_URL = "https://animal-game-backend.onrender.com";
-  // ────────────────────────────────────────────────────────
 
-  let messages        = [];   // conversation history sent to API
-  let questionsLeft   = 20;
-  let gameOver        = false;
+  let messages      = [];
+  let questionsLeft = 20;
+  let gameOver      = false;
 
-  // ── INIT ────────────────────────────────────────────────
   buildDots();
   startGame();
 
@@ -362,15 +452,12 @@
   async function startGame() {
     messages = [];
     addMessage("bot", "I'm thinking of an animal… 🤔 You have 20 yes/no questions. Ask away!");
-    // "Warm up" the model so it picks an animal silently
     messages.push({ role: "user", content: "Start the game. Pick your animal but don't tell me." });
     const reply = await callAPI();
     messages.push({ role: "assistant", content: reply });
-    // Don't show the first reply, it's just the model acknowledging internally
     document.getElementById("dot-0").classList.add("current");
   }
 
-  // ── SEND ────────────────────────────────────────────────
   async function sendMessage() {
     if (gameOver) return;
     const input = document.getElementById("user-input");
@@ -390,13 +477,12 @@
 
     messages.push({ role: "assistant", content: reply });
 
-    // Detect outcome
     const upper = reply.toUpperCase();
     let bubbleClass = "";
-    if      (upper.includes("CORRECT!"))    { bubbleClass = "win";  endGame(true);  }
-    else if (upper.includes("GAME_OVER"))   { bubbleClass = "lose"; endGame(false); }
-    else if (upper.startsWith("YES"))       { bubbleClass = "yes"; }
-    else if (upper.startsWith("NO"))        { bubbleClass = "no"; }
+    if      (upper.includes("CORRECT!"))  { bubbleClass = "win";  endGame(true);  }
+    else if (upper.includes("GAME_OVER")) { bubbleClass = "lose"; endGame(false); }
+    else if (upper.startsWith("YES"))     { bubbleClass = "yes"; }
+    else if (upper.startsWith("NO"))      { bubbleClass = "no"; }
 
     addMessage("bot", reply, bubbleClass);
 
@@ -408,12 +494,10 @@
     }
   }
 
-  // Handle Enter key
   document.getElementById("user-input").addEventListener("keydown", e => {
     if (e.key === "Enter") sendMessage();
   });
 
-  // ── API CALL ────────────────────────────────────────────
   async function callAPI() {
     try {
       const res = await fetch(`${BACKEND_URL}/chat`, {
@@ -426,17 +510,16 @@
       return data.reply;
     } catch (err) {
       console.error(err);
-      return "⚠️ Could not reach the server. Make sure the backend is running.";
+      return "⚠️ Could not reach the server. Please try again in a moment.";
     }
   }
 
-  // ── UI HELPERS ──────────────────────────────────────────
   function addMessage(role, text, extraClass = "") {
-    const log = document.getElementById("chat-log");
+    const log  = document.getElementById("chat-log");
     const wrap = document.createElement("div");
     wrap.className = `msg ${role}`;
 
-    const label  = document.createElement("div");
+    const label = document.createElement("div");
     label.className = "label";
     label.textContent = role === "user" ? "You" : "Host";
 
@@ -451,12 +534,11 @@
   }
 
   function showTyping() {
-    const log = document.getElementById("chat-log");
+    const log  = document.getElementById("chat-log");
     const wrap = document.createElement("div");
     wrap.className = "msg bot typing";
     wrap.id = "typing-indicator";
-    wrap.innerHTML = `
-      <div class="label">Host</div>
+    wrap.innerHTML = `<div class="label">Host</div>
       <div class="bubble"><span></span><span></span><span></span></div>`;
     log.appendChild(wrap);
     log.scrollTop = log.scrollHeight;
@@ -480,16 +562,16 @@
   function endGame(won) {
     gameOver = true;
     setControls(false);
-    document.getElementById("hint-row").style.display = "none";
+    document.getElementById("hint-row").style.display  = "none";
     document.getElementById("new-game-btn").style.display = "block";
   }
 
   async function resetGame() {
     gameOver      = false;
     questionsLeft = 20;
-    document.getElementById("ql-num").textContent  = 20;
-    document.getElementById("chat-log").innerHTML  = "";
-    document.getElementById("hint-row").style.display = "flex";
+    document.getElementById("ql-num").textContent        = 20;
+    document.getElementById("chat-log").innerHTML        = "";
+    document.getElementById("hint-row").style.display   = "flex";
     document.getElementById("new-game-btn").style.display = "none";
     buildDots();
     setControls(true);
