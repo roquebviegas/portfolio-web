@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>20 Questions – Guess the Animal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet" />
+  <style>
+    /* ── RESET & BASE ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0d1117;
+      --surface:   #161b22;
+      --border:    #30363d;
+      --accent:    #f0a500;
+      --accent2:   #e05c00;
+      --text:      #e6edf3;
+      --muted:     #8b949e;
+      --yes:       #3fb950;
+      --no:        #f85149;
+      --radius:    12px;
+    }
+
+    body {
+      font-family: 'DM Mono', monospace;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem 1rem 4rem;
+    }
+
+    /* ── HEADER ── */
+    header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    header .emoji-row {
+      font-size: 2.4rem;
+      letter-spacing: 0.2rem;
+      animation: float 3s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%,100% { transform: translateY(0); }
+      50%      { transform: translateY(-6px); }
+    }
+    header h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(1.8rem, 5vw, 3rem);
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin: 0.4rem 0 0.2rem;
+      line-height: 1.1;
+    }
+    header p {
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    /* ── GAME CARD ── */
+    .card {
+      width: 100%;
+      max-width: 680px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    /* ── STATUS BAR ── */
+    .status-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem 1.2rem;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+    .status-bar .questions-left {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .ql-num {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--accent);
+    }
+    .dots {
+      display: flex;
+      gap: 3px;
+    }
+    .dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--border);
+      transition: background 0.3s;
+    }
+    .dot.used    { background: var(--accent2); }
+    .dot.current { background: var(--accent); box-shadow: 0 0 6px var(--accent); }
+
+    /* ── CHAT LOG ── */
+    #chat-log {
+      padding: 1.2rem;
+      max-height: 400px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      scroll-behavior: smooth;
+    }
+    #chat-log::-webkit-scrollbar { width: 5px; }
+    #chat-log::-webkit-scrollbar-track { background: transparent; }
+    #chat-log::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+    .msg {
+      display: flex;
+      flex-direction: column;
+      max-width: 88%;
+      animation: pop-in 0.2s ease;
+    }
+    @keyframes pop-in {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .msg.user  { align-self: flex-end; align-items: flex-end; }
+    .msg.bot   { align-self: flex-start; align-items: flex-start; }
+    .msg .label {
+      font-size: 0.68rem;
+      color: var(--muted);
+      margin-bottom: 3px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .msg .bubble {
+      padding: 0.6rem 0.9rem;
+      border-radius: 10px;
+      font-size: 0.88rem;
+      line-height: 1.5;
+    }
+    .msg.user .bubble {
+      background: rgba(240, 165, 0, 0.15);
+      border: 1px solid rgba(240, 165, 0, 0.35);
+      color: var(--text);
+    }
+    .msg.bot .bubble {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+    .msg.bot .bubble.yes { border-color: var(--yes); color: var(--yes); }
+    .msg.bot .bubble.no  { border-color: var(--no);  color: var(--no); }
+    .msg.bot .bubble.win {
+      border-color: var(--accent);
+      color: var(--accent);
+      font-weight: 700;
+      font-family: 'Syne', sans-serif;
+      font-size: 1rem;
+    }
+    .msg.bot .bubble.lose {
+      border-color: var(--no);
+      color: var(--no);
+      font-weight: 600;
+    }
+
+    /* ── TYPING INDICATOR ── */
+    .typing .bubble {
+      display: flex;
+      gap: 5px;
+      align-items: center;
+      padding: 0.75rem 1rem;
+    }
+    .typing .bubble span {
+      width: 7px; height: 7px;
+      background: var(--muted);
+      border-radius: 50%;
+      animation: bounce 1.2s infinite;
+    }
+    .typing .bubble span:nth-child(2) { animation-delay: 0.2s; }
+    .typing .bubble span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes bounce {
+      0%,80%,100% { transform: translateY(0); opacity: 0.5; }
+      40%          { transform: translateY(-6px); opacity: 1; }
+    }
+
+    /* ── HINT ROW ── */
+    .hint-row {
+      padding: 0 1.2rem 0.6rem;
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .hint-chip {
+      font-size: 0.72rem;
+      padding: 0.25rem 0.65rem;
+      border-radius: 99px;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.15s;
+      background: transparent;
+      font-family: 'DM Mono', monospace;
+    }
+    .hint-chip:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: rgba(240,165,0,0.08);
+    }
+
+    /* ── INPUT AREA ── */
+    .input-area {
+      padding: 1rem 1.2rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      gap: 0.6rem;
+    }
+    #user-input {
+      flex: 1;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 0.65rem 0.9rem;
+      color: var(--text);
+      font-family: 'DM Mono', monospace;
+      font-size: 0.88rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    #user-input:focus { border-color: var(--accent); }
+    #user-input::placeholder { color: var(--muted); }
+    #user-input:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    #send-btn {
+      background: var(--accent);
+      color: #000;
+      border: none;
+      border-radius: 8px;
+      padding: 0.65rem 1.2rem;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 0.88rem;
+      cursor: pointer;
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+    #send-btn:hover  { background: var(--accent2); color: #fff; }
+    #send-btn:active { transform: scale(0.97); }
+    #send-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+    /* ── NEW GAME BTN ── */
+    #new-game-btn {
+      display: none;
+      margin: 0 auto;
+      margin-top: 1rem;
+      padding: 0.65rem 1.8rem;
+      background: transparent;
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 0.9rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    #new-game-btn:hover { background: var(--accent); color: #000; }
+
+    /* ── FOOTER ── */
+    footer {
+      margin-top: 2rem;
+      font-size: 0.75rem;
+      color: var(--muted);
+      text-align: center;
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="emoji-row">🐘 🦁 🐧 🦋 🐬</div>
+  <h1>Guess the Animal</h1>
+  <p>20 yes/no questions to figure out the mystery animal</p>
+</header>
+
+<div class="card">
+  <!-- Status bar -->
+  <div class="status-bar">
+    <div class="questions-left">
+      <span class="ql-num" id="ql-num">20</span>
+      <span>questions left</span>
+    </div>
+    <div class="dots" id="dots-row"></div>
+  </div>
+
+  <!-- Chat log -->
+  <div id="chat-log"></div>
+
+  <!-- Quick-question chips -->
+  <div class="hint-row" id="hint-row">
+    <button class="hint-chip" onclick="fillInput('Is it a mammal?')">Is it a mammal?</button>
+    <button class="hint-chip" onclick="fillInput('Does it live in water?')">Lives in water?</button>
+    <button class="hint-chip" onclick="fillInput('Can it fly?')">Can it fly?</button>
+    <button class="hint-chip" onclick="fillInput('Is it bigger than a cat?')">Bigger than a cat?</button>
+    <button class="hint-chip" onclick="fillInput('Is it dangerous?')">Is it dangerous?</button>
+  </div>
+
+  <!-- Input -->
+  <div class="input-area">
+    <input id="user-input" type="text" placeholder="Ask a yes/no question or guess the animal…" autocomplete="off" />
+    <button id="send-btn" onclick="sendMessage()">Ask →</button>
+  </div>
+</div>
+
+<button id="new-game-btn" onclick="resetGame()">🔄 Play Again</button>
+
+<footer>
+  Powered by GPT · <a href="../index.html">← Back to Portfolio</a>
+</footer>
+
+<script>
+  // ── CONFIG ──────────────────────────────────────────────
+  // Replace with your Render backend URL after deployment:
+  const BACKEND_URL = "https://animal-game-backend.onrender.com";
+  // ────────────────────────────────────────────────────────
+
+  let messages        = [];   // conversation history sent to API
+  let questionsLeft   = 20;
+  let gameOver        = false;
+
+  // ── INIT ────────────────────────────────────────────────
+  buildDots();
+  startGame();
+
+  function buildDots() {
+    const row = document.getElementById("dots-row");
+    row.innerHTML = "";
+    for (let i = 0; i < 20; i++) {
+      const d = document.createElement("div");
+      d.className = "dot";
+      d.id = `dot-${i}`;
+      row.appendChild(d);
+    }
+  }
+
+  function markDot(index) {
+    const d = document.getElementById(`dot-${index}`);
+    if (!d) return;
+    d.classList.remove("current");
+    d.classList.add("used");
+    const next = document.getElementById(`dot-${index + 1}`);
+    if (next) next.classList.add("current");
+  }
+
+  async function startGame() {
+    messages = [];
+    addMessage("bot", "I'm thinking of an animal… 🤔 You have 20 yes/no questions. Ask away!");
+    // "Warm up" the model so it picks an animal silently
+    messages.push({ role: "user", content: "Start the game. Pick your animal but don't tell me." });
+    const reply = await callAPI();
+    messages.push({ role: "assistant", content: reply });
+    // Don't show the first reply, it's just the model acknowledging internally
+    document.getElementById("dot-0").classList.add("current");
+  }
+
+  // ── SEND ────────────────────────────────────────────────
+  async function sendMessage() {
+    if (gameOver) return;
+    const input = document.getElementById("user-input");
+    const text  = input.value.trim();
+    if (!text) return;
+
+    input.value = "";
+    setControls(false);
+    addMessage("user", text);
+
+    const questionNumber = 20 - questionsLeft;
+    messages.push({ role: "user", content: text });
+
+    showTyping();
+    const reply = await callAPI();
+    removeTyping();
+
+    messages.push({ role: "assistant", content: reply });
+
+    // Detect outcome
+    const upper = reply.toUpperCase();
+    let bubbleClass = "";
+    if      (upper.includes("CORRECT!"))    { bubbleClass = "win";  endGame(true);  }
+    else if (upper.includes("GAME_OVER"))   { bubbleClass = "lose"; endGame(false); }
+    else if (upper.startsWith("YES"))       { bubbleClass = "yes"; }
+    else if (upper.startsWith("NO"))        { bubbleClass = "no"; }
+
+    addMessage("bot", reply, bubbleClass);
+
+    if (!gameOver) {
+      questionsLeft--;
+      document.getElementById("ql-num").textContent = questionsLeft;
+      markDot(questionNumber);
+      setControls(true);
+    }
+  }
+
+  // Handle Enter key
+  document.getElementById("user-input").addEventListener("keydown", e => {
+    if (e.key === "Enter") sendMessage();
+  });
+
+  // ── API CALL ────────────────────────────────────────────
+  async function callAPI() {
+    try {
+      const res = await fetch(`${BACKEND_URL}/chat`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ messages })
+      });
+      const data = await res.json();
+      if (data.error) throw new Error(data.error);
+      return data.reply;
+    } catch (err) {
+      console.error(err);
+      return "⚠️ Could not reach the server. Make sure the backend is running.";
+    }
+  }
+
+  // ── UI HELPERS ──────────────────────────────────────────
+  function addMessage(role, text, extraClass = "") {
+    const log = document.getElementById("chat-log");
+    const wrap = document.createElement("div");
+    wrap.className = `msg ${role}`;
+
+    const label  = document.createElement("div");
+    label.className = "label";
+    label.textContent = role === "user" ? "You" : "Host";
+
+    const bubble = document.createElement("div");
+    bubble.className = `bubble ${extraClass}`;
+    bubble.textContent = text;
+
+    wrap.appendChild(label);
+    wrap.appendChild(bubble);
+    log.appendChild(wrap);
+    log.scrollTop = log.scrollHeight;
+  }
+
+  function showTyping() {
+    const log = document.getElementById("chat-log");
+    const wrap = document.createElement("div");
+    wrap.className = "msg bot typing";
+    wrap.id = "typing-indicator";
+    wrap.innerHTML = `
+      <div class="label">Host</div>
+      <div class="bubble"><span></span><span></span><span></span></div>`;
+    log.appendChild(wrap);
+    log.scrollTop = log.scrollHeight;
+  }
+
+  function removeTyping() {
+    const t = document.getElementById("typing-indicator");
+    if (t) t.remove();
+  }
+
+  function setControls(enabled) {
+    document.getElementById("user-input").disabled = !enabled;
+    document.getElementById("send-btn").disabled   = !enabled;
+  }
+
+  function fillInput(text) {
+    document.getElementById("user-input").value = text;
+    document.getElementById("user-input").focus();
+  }
+
+  function endGame(won) {
+    gameOver = true;
+    setControls(false);
+    document.getElementById("hint-row").style.display = "none";
+    document.getElementById("new-game-btn").style.display = "block";
+  }
+
+  async function resetGame() {
+    gameOver      = false;
+    questionsLeft = 20;
+    document.getElementById("ql-num").textContent  = 20;
+    document.getElementById("chat-log").innerHTML  = "";
+    document.getElementById("hint-row").style.display = "flex";
+    document.getElementById("new-game-btn").style.display = "none";
+    buildDots();
+    setControls(true);
+    await startGame();
+  }
+</script>
+</body>
+</html>
